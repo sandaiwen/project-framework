@@ -1,0 +1,130 @@
+{
+  "version": 2,
+  "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "computedHash": "dcfdaa153382337f5c8109041e97b1feb6106289d860dfce8e6a02caf3b28bb8",
+      "installMode": "copy"
+    },
+    "api-design": {
+      "source": "ericrisco/rsc-harness",
+      "sourceType": "github",
+      "skillPath": "skills/api-design/SKILL.md",
+      "computedHash": "5d4d138182eee4f7c05d0e1a0b1dfd5e776f61871de961e346554973c88208f3",
+      "installMode": "copy"
+    },
+    "fastapi": {
+      "source": "ericrisco/rsc-harness",
+      "sourceType": "github",
+      "skillPath": "skills/fastapi/SKILL.md",
+      "computedHash": "c26969a6825fd95ea7b0024cd720e8dd7cc98c0571186addb221a279f0cee814",
+      "installMode": "copy"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "193031153017118858c7b4640dc04051cf53402e2f3674a66b9a8bdd2657d5f7",
+      "installMode": "copy"
+    },
+    "git-commit": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/git-commit/SKILL.md",
+      "computedHash": "7a898c31bcc47800a5a3430370f75bb30feded9aa044bd8eb1639184773b2bdd",
+      "installMode": "copy"
+    },
+    "migrate-radix-to-base": {
+      "source": "shadcn-ui/ui",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-radix-to-base/SKILL.md",
+      "computedHash": "7644de21e9aa533904def58c30f809ae6574c3cabc6396ab8b03dee751e8ffbe",
+      "installMode": "copy"
+    },
+    "planning-with-files": {
+      "source": "othmanadi/planning-with-files",
+      "sourceType": "github",
+      "skillPath": "skills/planning-with-files/SKILL.md",
+      "computedHash": "5c0b9328850a17a7923a4db6d5519469d4ac532ae6545a3ed3e238942d31a6fa",
+      "installMode": "copy"
+    },
+    "postgres": {
+      "source": "timescale/pg-aiguide",
+      "sourceType": "github",
+      "skillPath": "skills/postgres/SKILL.md",
+      "computedHash": "54ffb3b26ff50d366d29034e80f10a892f539aa0628bd4c3ebf9fb1f9da24f79",
+      "installMode": "copy"
+    },
+    "postgres-database-migration": {
+      "source": "timescale/pg-aiguide",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-database-migration/SKILL.md",
+      "computedHash": "4f5a408b5129a19191888c1badc5b830dce755eb5dc3866cd66c59800baac111",
+      "installMode": "copy"
+    },
+    "security-review": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/security-review/SKILL.md",
+      "computedHash": "53d2f996fdc40ef3e067c255bba8147213a4a90fdaf4d3e8d32da7cce09fa1db",
+      "installMode": "copy"
+    },
+    "shadcn": {
+      "source": "shadcn-ui/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "388962d16c7a4f13aaeee0d8f128e50a87df8553d42ef7988c39c0e1c74a40e8",
+      "installMode": "copy"
+    },
+    "skills-creator": {
+      "source": ".agents/skills/skills-creator",
+      "sourceType": "local",
+      "computedHash": "f70934d13528e26818f0d0cd48f1df1306975e5795547b61945945183caaa795",
+      "installMode": "copy"
+    },
+    "testing-py": {
+      "source": "ericrisco/rsc-harness",
+      "sourceType": "github",
+      "skillPath": "skills/testing-py/SKILL.md",
+      "computedHash": "3c4e4d89d643758a7aecc003af0abce78dd42f1eb1ccb1731d9891d0d592f857",
+      "installMode": "copy"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "183de1eb256294f5582c073a0e604bafb359b583582bbbbb684f39b773977280",
+      "installMode": "copy"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "computedHash": "f711ed8b16162eaa712abbcdbbae6c926f86c57e60127735fecc3ad0dd85b3fa",
+      "installMode": "copy"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "7991ed4fbecdac23f47c1a40c243e00a212a9e7f3604db93959b3ae11dffe299",
+      "installMode": "copy"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "4f68ae07187fb0d1fb78c88b503d089da4cf5a9d9625d1f2e425b1590bf96d92",
+      "installMode": "copy"
+    },
+    "webapp-testing": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/webapp-testing/SKILL.md",
+      "computedHash": "48cd9a742a59250edec6db89cf081ef5465f365e2133f6d6c5e29c380b754b7d",
+      "installMode": "copy"
+    }
+  }
+}

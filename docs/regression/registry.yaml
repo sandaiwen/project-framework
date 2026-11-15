@@ -1,0 +1,37 @@
+# 回归登记表 —— 跨前后端唯一一份
+# 规则：spec/testing/regression-testing-guide.md 第 5 章；缺陷流程：spec/workflow/bugfix-workflow-guide.md 第 8 章
+#
+# 一条记录 = 一个缺陷 / 事故 / 行为变更，可挂多条用例。
+# 写新条目时逐字段填，不要留空占位。
+#
+#   id                  必填  缺陷单号。本项目用 BUG-YYYYMMDD-NN（与 analysis.md 的 Issue 完全一致）
+#   title               必填  一句话现象：什么条件下错了。不写修复方案
+#   severity            必填  critical | high | medium | low
+#   source              必填  defect | incident | behavior-change | contract
+#   found_at            必填  YYYY-MM-DD
+#   fixed_in            可选  首次修复所在 tag 或 commit；未发布留空
+#   root_cause          必填  一句话根因，必须与 analysis.md 的「根本原因」一致
+#   cases               必填  layer: backend|frontend|e2e；path: 文件::节点名
+#   reverse_verified    必填  true|false。false 必须在 note 写原因，且 status 置 pending
+#   reverse_verified_at 条件  reverse_verified 为 true 时必填，YYYY-MM-DD
+#   status              必填  active | pending | retired
+#   note                条件  弱回归原因、数据来源、退役理由与替代条目
+#
+# 示例（新建条目时照这个结构写，然后删掉这段注释）：
+#
+# - id: BUG-20261115-01
+#   title: 购物车金额出现 0.01 误差，导致支付金额与商品总价不一致
+#   severity: high
+#   source: defect
+#   found_at: 2026-11-15
+#   fixed_in: v1.2.0
+#   root_cause: 金额先四舍五入再累加，分位误差随条目数累积
+#   cases:
+#     - layer: backend
+#       path: backend/tests/modules/orders/test_regression.py::test_regression_issue_20261115_01_rounding
+#   reverse_verified: true
+#   reverse_verified_at: 2026-11-16
+#   status: active
+#   note: 无
+
+[]

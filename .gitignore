@@ -1,0 +1,57 @@
+# ---------- 设计仓：只读克隆，禁止入库（spec/workflow/dev-workflow-guide.md 2.1）----------
+.design/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ---------- Node / Next.js ----------
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+playwright-report/
+test-results/
+blob-report/
+
+# 注意：不要写 `*.log`，也不要写 `artifacts/`
+# tasks/**/artifacts/ 下的 red.log / green.log / reverse-verify.log 是验收证据，必须入库
+
+# ---------- 环境与密钥 ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------- 编辑器与系统 ----------
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- 本地临时 ----------
+docs/.run/
+_*.tmp.md
+*.orig
+*.rej
