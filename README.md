@@ -126,3 +126,4 @@ uv run python scripts/check_regression_registry.py --collected /tmp/collected.tx
 - **应用代码尚未开始**：`backend/`、`frontend/` 都还不存在，`pyproject.toml` 与 `package.json` 也没有。第一个任务落地时会由计划的 Step 0 建出最小骨架。
 - **`.design/` 与 `design.lock` 都还不存在**。第一个功能任务之前需要：克隆设计仓到 `.design/`，按 `spec/workflow/dev-workflow-guide.md` 2.1 的格式建立 `design.lock` 并记录 commit。在此之前，两份 feature 入口会停在"设计仓就位"这道硬停机上。
 - `tasks/` 下还没有任何计划，`tasks/INDEX.md` 是空表。
+- 本地仓库已初始化：分支 `main`，首次提交 `chore: 初始化项目基础框架仓库`。**尚无远端**，未 push。
