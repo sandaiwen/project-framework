@@ -27,8 +27,8 @@ last_updated: 2026-11-15
 | `alembic/alembic-guide.md` | 改数据库结构：迁移文件命名与内容、执行与回滚、封装脚本 | 有任何表、字段、索引变更时 |
 | `dependency/dependency-guide.md` | 依赖管理：版本与锁文件、后端（uv）与前端（npm）依赖分组、第三方 SDK 封装、新依赖准入、升级与移除、供应链安全、工具链与系统包 | 引入/升级/移除任何依赖、接入第三方服务时 |
 | `plans/plan-writing-guide.md` | 落盘执行计划：落盘门槛、目录三件套、`tasks/INDEX.md`（生成的任务索引）、`plan.md` 字段、验收标准、状态机与更新规则 | 启动任何满足落盘门槛的开发任务之前（判定见其第 0 章）；要不要审核见 `plans/plan-audit-guide.md` 0.2 |
-| `plans/plan-audit-guide.md` | 计划审核：档位建议（`none` / `L1` / `L2`）与抽查、审核者独立性、八维度、严重度与结论、轮次上限、报告模板与 `audits/` 命名 | 决定要不要审、执行审核时 |
-| `plans/plan-audit-response-guide.md` | 审核响应：逐条处置（accept/partial/reject/defer）、改计划的位置对应、响应报告模板、轮次与升级决策 | 拿到审核报告、调整计划时 |
+| `plans/plan-audit-guide.md` | 计划审核：档位建议（`none` / `L1` / `L2`）与抽查、审核者独立性、八维度、严重度与结论、3 轮上限与"最后一轮"告知、末轮后转风险敞口、报告模板与 `audits/` 命名 | 决定要不要审、执行审核时 |
+| `plans/plan-audit-response-guide.md` | 审核响应：逐条处置（accept/partial/reject/defer/risk）、改计划的位置对应、响应报告模板、末轮收口（`start` / `start-with-risk`） | 拿到审核报告、调整计划时 |
 | `ci_cd/ci-cd-guide.md` | 建与改流水线、部署：分支与提交约定、流水线阶段与门禁、依赖与工具链锁定、镜像与产物、环境与密钥、迁移时序、部署与回滚、供应链安全、发布与度量 | 新增或修改 `.github/workflows/**`、`Dockerfile`、部署脚本时；准备第一次自动部署之前 |
 
 ## 一个功能从零落地时的顺序

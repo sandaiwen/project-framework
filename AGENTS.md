@@ -33,12 +33,12 @@
 | 入口文件 | 输入 | 审核 | `Metadata.Audit` |
 | --- | --- | --- | --- |
 | `.agents/prompts/feature-plan.prompt.md` | 设计文档中的一个**需求** | 不审，写完即定稿 | `none` |
-| `.agents/prompts/feature-plan-audited.prompt.md` | 同上 | 独立会话/agent 审 1～3 轮 | `L1` / `L2` |
+| `.agents/prompts/feature-plan-audited.prompt.md` | 同上 | 独立会话/agent 审最多 3 轮 | `L1` / `L2` |
 | `.agents/prompts/issue-plan.prompt.md` | 一个**问题**（bug / 缺陷 / 事故） | 不审 | `none` |
-| `.agents/prompts/issue-plan-audited.prompt.md` | 同上 | 审 1～3 轮 | `L1` / `L2` |
+| `.agents/prompts/issue-plan-audited.prompt.md` | 同上 | 审最多 3 轮 | `L1` / `L2` |
 
 - 四份是**唯一任务入口**：接任务先选一份，按文件里的入参格式贴一行输入即可跑完（除文件标注的硬停机点外不需要再喂）。
-- 选哪份看风险：命中 `spec/plans/plan-audit-guide.md` 0.2 任一条（鉴权、金额、不可逆数据、破坏性迁移、并发、对外契约、安全边界）或线上事故 → 用 audited 两份；否则用不审的两份。轮次上限 `L1` 两轮、`L2` 三轮，到上限三选一（拆计划 / 转探索 / 升级人决策），不许加轮。
+- 选哪份看风险：命中 `spec/plans/plan-audit-guide.md` 0.2 任一条（鉴权、金额、不可逆数据、破坏性迁移、并发、对外契约、安全边界）或线上事故 → 用 audited 两份；否则用不审的两份。轮次上限**统一 3 轮**，第 3 轮起审时必须告知"这是最后一轮"，之后不再加轮；未关闭项转风险敞口（后果 / 检测 / 回退）带险开工。
 - 审核报告与响应报告放**同一个计划目录**下 `audits/NN-audit.md`、`audits/NN-response.md`，与 `plan.md` 同级，随计划一起提交。
 - 审核**不是流程阶段**：不设开工门禁、不新增状态、不改提交粒度。它只在"写计划"这一段里发生。
 - 独立性必须真实：同一会话"顺手再审一遍"等于没审。工具不支持子 agent 时，用提示词里的移交块换会话审。

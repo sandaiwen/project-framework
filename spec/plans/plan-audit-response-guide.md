@@ -1,6 +1,6 @@
 ---
-version: 2.0.0
-last_updated: 2026-11-15
+version: 3.0.0
+last_updated: 2026-11-26
 ---
 
 # 计划审核响应规范（Plan Audit Response Guide）
@@ -50,7 +50,7 @@ last_updated: 2026-11-15
 
 ## 2. 逐条处置
 
-每条 finding 只能落到四种处置之一：
+每条 finding 只能落到五种处置之一：
 
 | 处置 | 含义 | 必须给什么 |
 | --- | --- | --- |
@@ -58,18 +58,21 @@ last_updated: 2026-11-15
 | `partial` | 部分成立，只改成立的部分 | 改了哪部分 + 未改部分的理由 |
 | `reject` | 不成立或与规范冲突 | **证据**：引用 spec 条款、文件行号、或事实（如命令输出） |
 | `defer` | 成立但本次不做 | 为什么可以延后 + 落到「遗留问题」+ 后续计划标识 |
+| `risk` | 成立、本次也不做，转风险敞口带险开工 | 后果 / 检测（Step + 命令或断言）/ 回退，三样缺一不可 |
 
 按严重度限定处置：
 
 | 严重度 | 允许的处置 |
 | --- | --- |
-| `blocker` | `accept` 或 `reject`（带证据）。**不允许 `defer`** |
-| `major` | 四种都允许；`defer` 必须写进「遗留问题」并给时限 |
+| `blocker` | `accept` 或 `reject`（带证据）；**第 3 轮另可用 `risk`**。不允许 `defer` |
+| `major` | `accept` / `partial` / `reject` / `defer` 都允许；第 3 轮可 `risk`；`defer` 必须写进「遗留问题」并给时限 |
 | `minor` | `accept` 或 `defer`，不阻断开工 |
 
 - MUST `reject` 必须指向可核查的依据，不接受"我认为不需要""这样也可以"。
 - MUST `partial` 说明未采纳部分的技术理由，不写"视情况而定"。
+- MUST `risk` 只在 3 轮用尽（即第 3 轮响应）时允许，且三要素齐全，同时落到 `plan.md` 的「风险」章节。
 - MUST NOT 把 `blocker` 写成 `defer` 来绕过复审。
+- MUST NOT 用 `risk` 代替 `accept`：能改而不改的，不许挂成风险敞口。
 - MUST NOT 为通过审核而放宽验收标准：可以把"列表要快"改成"P95 < 300ms"，不可以把"P95 < 300ms"改成"响应及时"。
 
 ---
@@ -123,12 +126,12 @@ tasks/plans/<topic>/<plan-id>/audits/
 
 - 计划：tasks/plans/<topic>/<plan-id>/
 - 对应审核：audits/<N>-audit.md
-- 轮次：<N> / <上限>
+- 轮次：<N> / 3
 - 响应者：<工具 / 模型 / 会话>
 - 时间：2026-11-15 17:05
 - 审核结论：reject（blocker 2 / major 3 / minor 1）
-- 处置统计：accept 4 / partial 1 / reject 1 / defer 0
-- 结论：ready-for-reaudit | ready-to-start | escalate
+- 处置统计：accept 4 / partial 1 / reject 1 / defer 0 / risk 0
+- 结论：ready-for-reaudit | start | start-with-risk | escalate
 
 ## 逐条处置
 
@@ -161,29 +164,26 @@ tasks/plans/<topic>/<plan-id>/audits/
 - MUST 处置表覆盖审核报告中的**每一条** finding，编号与顺序不变（禁止重新编号）。
 - MUST 处置表与 `plan.md` 的实际改动一致；正文改了但表里没有，视为响应不完整。
 - MUST 「未处置项与风险」写明 `defer` / `partial` 的残留，不能空着。
-- MUST 结论是三选一，不写"基本处理完毕"。
+- MUST 结论只在 `ready-for-reaudit` / `start` / `start-with-risk` / `escalate` 四值内取，不写"基本处理完毕"。
 
 ---
 
-## 5. 轮次与收敛
+## 5. 轮次与收口
 
-轮次上限与超限处理见 `spec/plans/plan-audit-guide.md` 第 5 节。响应侧的动作是：
+轮次规则见 `spec/plans/plan-audit-guide.md` 第 5 节（最多 3 轮，第 3 轮是最后一次审核）。响应侧只做一件事：**把报告变成一份能开工的计划**。
 
 | 情形 | 响应结论 | 下一步 |
 | --- | --- | --- |
-| 所有 blocker 已 `accept` 并改完 | `ready-for-reaudit` | 请求下一轮审核（只核 blocker 与新增问题） |
-| 只有 blocker 被 `reject`（有证据） | `ready-for-reaudit` | 复审时由审核者裁定证据是否成立 |
-| `pass-with-changes` 的 major 全部处置 | `ready-to-start` | 直接开工，不必复审 |
-| 已到上限仍有 blocker | `escalate` | 必须选一条出路（见下） |
+| 全部处置完，`blocker` / `major` 归零，且还有轮次 | `ready-for-reaudit` | 请求下一轮审核（只核 blocker、major 与新增问题） |
+| 全部处置完，`blocker` / `major` 归零，已在第 3 轮 | `start` | 直接开工，不再复审 |
+| 有未关闭项，已逐条转风险敞口（三要素齐全） | `start-with-risk` | 第 3 轮后直接开工，不再复审 |
+| 需求本身做不了（见 audit-guide 5.2） | `escalate` | 一次性裁定请求，停机 |
 
-到上限时三选一，并把选择写进响应报告与 `plan.md` 的「决策记录」：
-
-1. **拆计划**：blocker 集中的部分拆成新计划（新 `plan-id`），原计划缩范围后开工。
-2. **转探索**：`plan.md` 改为探索性计划（目标改为"得出事实"，验收改为"结论 + 证据"），原需求另开计划。
-3. **升级决策**：请用户裁定范围或验收标准；裁定结果原文写入「决策记录」。
-
-- MUST 第 3 轮（L1 为第 2 轮）结束时必须给出上述之一，不允许"再改一轮"。
+- MUST 第 3 轮的响应就是**最后一次调整**：做完即开工，不请求复审、不"再改一轮"。
+- MUST 未关闭项一律用 `risk` 处置并落到 `plan.md` 的「风险」章节；第 3 轮之后没有"留到下轮"这个选项。
+- MUST 拆计划是**可选**动作（缺陷集中在某个 Step、或需求明显过大时），不是必经出口：拆分后在「决策记录」写 `来自 <父 plan-id> 第 3 轮拆分`，子计划**免审**直接进实施，父计划 `STATUS.md` 转 `Archived`。
 - MUST 拆分后原计划与新计划互相在「前置条件」/「遗留问题」里引用，保持可追溯。
+- MUST NOT 以"最后一轮"为理由放宽验收标准或删除问题条目。
 
 ---
 
@@ -195,7 +195,7 @@ tasks/plans/<topic>/<plan-id>/audits/
 - MUST NOT 用放宽验收标准、缩小范围却不说明、把 blocker 降级的方式换取通过。
 - MUST NOT 在 `plan.md` 里写"按审核意见已修改"而不写改了哪里（要可核对）。
 - MUST NOT 跳过核查直接照改：意见不成立时要敢于 `reject` 并给证据。
-- MUST NOT 超过轮次上限继续循环。
+- MUST NOT 请求第 4 轮审核，或以"再确认一次"变相续轮。
 
 ---
 
@@ -219,4 +219,5 @@ tasks/plans/<topic>/<plan-id>/audits/
 - [ ] `audits/NN-response.md` 与对应 audit 同轮次。
 - [ ] 处置表覆盖全部 finding，编号未变。
 - [ ] 「计划变更摘要」与 `plan.md` 实际改动一致。
-- [ ] 结论是三选一；到上限时已给出拆计划 / 转探索 / 升级决策之一。
+- [ ] 结论在四值内（`ready-for-reaudit` / `start` / `start-with-risk` / `escalate`）。
+- [ ] 第 3 轮时未关闭项已全部转风险敞口，且每条都有后果 / 检测 / 回退。

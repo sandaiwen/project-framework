@@ -1,7 +1,7 @@
 ---
-description: 接一个设计文档中的需求，写实施计划后由独立 agent 审核 1~3 轮，收敛后执行到"待提交"
-version: 1.0.0
-last_updated: 2026-11-15
+description: 接一个设计文档中的需求，写实施计划后由独立 agent 审核最多 3 轮；第 3 轮后按未关闭项转风险敞口再执行到"待提交"
+version: 2.0.0
+last_updated: 2026-11-26
 kind: feature / audited
 inputs:
   - "需求：.design/docs/<module>/<file>.md#<需求标识>"
@@ -10,7 +10,7 @@ inputs:
 
 # 功能任务 · 写实施计划 + 审核后执行
 
-输入是**设计文档里的一个需求**。产出是一个**经过独立审核并已收敛**的计划目录、按计划改完的代码、以及停在"待提交"的一次提交候选。
+输入是**设计文档里的一个需求**。产出是一个**经过最多 3 轮独立审核、未关闭项已转风险敞口**的计划目录、按计划改完的代码、以及停在"待提交"的一次提交候选。
 
 与 `feature-plan.prompt.md` 的差别不止多一段，共五处：§2 多"审核能力"检查、§3.4 改按 0.2 定档、§4 多建 `audits/` 且 `Next Action` 写"等待第 1 轮审核"、§5 审核循环、§7 多一行 `audit`。审核是强制的，且**不许自审**。
 
@@ -90,8 +90,8 @@ inputs:
 - Audit Trigger: <命中的具体条目，不写"风险较高">
 ```
 
-- 命中 `L2` 任一条 → `L2`，轮次上限 3，审核者必须**不同 agent 或不同模型**。
-- 否则命中 `L1` 任一条 → `L1`，轮次上限 2，换会话即可。
+- 命中 `L2` 任一条 → `L2`，审核者必须**不同 agent 或不同模型**（轮次上限同为 3，见第 5 段）。
+- 否则命中 `L1` 任一条 → `L1`，换会话即可（轮次上限同为 3）。
 - 两条都不命中 → 说明这份需求其实是简单任务：**不要为了走流程而审**，改为输出"建议改用 `feature-plan.prompt.md`（`Audit: none`）"并结束，让用户决定。
 - 计划范围扩大后重新判定，**只升不降**。
 
@@ -118,24 +118,29 @@ tasks/plans/<topic>/<plan-id>/
 
 审核规则唯一来源：`spec/plans/plan-audit-guide.md`（怎么审、八维度、报告模板）；响应规则：`spec/plans/plan-audit-response-guide.md`（逐条处置、改计划哪一节）。本段只规定循环与停机。
 
-### 5.1 循环（N 从 1 起，不超过档位上限）
+### 5.1 循环（N 从 1 起，最多 3 轮）
 
-1. **起独立审核**：另开会话或子 agent，只给三样东西——计划目录 `tasks/plans/<topic>/<plan-id>/`（`analysis.md` 也在里面，缺陷类必须读）、规范路径 `spec/plans/plan-audit-guide.md`、轮次号 `N`。**不得传你的草稿、推理过程、倾向性结论。**
+1. **起独立审核**：另开会话或子 agent，只给三样东西——计划目录 `tasks/plans/<topic>/<plan-id>/`（`analysis.md` 也在里面，缺陷类必须读）、规范路径 `spec/plans/plan-audit-guide.md`、轮次号 `N / 3`。**第 3 轮必须写明"这是最后一轮审核"**。**不得传你的草稿、推理过程、倾向性结论。**
 2. **收报告**：产出 `audits/NN-audit.md`，结论必须是 `pass` / `pass-with-changes` / `reject` 三者之一，`blocker` / `major` / `minor` 分级齐全。
-3. **判收敛**：
-   - `pass` → 收敛，进入第 6 段。
+3. **判走向**：
+   - `pass` → 审核闭合，进入第 6 段。
    - `pass-with-changes` → 必须出响应（下一步），响应闭环后进入第 6 段，不必复审。
-   - `reject` → 必须出响应 + 复审，`N + 1` 回到第 1 步。
-4. **出响应**：按响应规范逐条处置（`accept` / `partial` / `reject` 需给证据 / `defer` 不得用于 `blocker`），产出 `audits/NN-response.md`，并把改动落到 `plan.md` 的对应章节。**本阶段禁止改代码。**
+   - `reject` 且 `N < 3` → 必须出响应 + 复审，`N + 1` 回到第 1 步。
+   - `reject` 且 `N == 3` → **不得起第 4 轮**，出响应后按 5.2 收口并开工。
+4. **出响应**：按响应规范逐条处置（`accept` / `partial` / `reject` 需给证据 / `defer` 不得用于 `blocker` / `risk` 只在第 3 轮可用），产出 `audits/NN-response.md`，并把改动落到 `plan.md` 的对应章节。**本阶段禁止改代码。**
 5. **复审只核**上一轮的 `blocker`、`major` 与新增项，不重新全审——每轮全审等于每轮推翻自己，轮次收不住。
-6. **留痕**：收敛后在「决策记录」写一行 `审核收敛：audits/NN-audit.md 结论 <pass|pass-with-changes>（YYYY-MM-DD）`。
+6. **留痕**：每轮在「决策记录」写一行 `审核第 N 轮：audits/NN-audit.md 结论 <...>（YYYY-MM-DD）`。
 
-### 5.2 轮次上限
+### 5.2 三轮之后：最终调整 → 开工
 
-| 档 | 上限 | 到上限仍有 `blocker` 时 |
-| --- | --- | --- |
-| `L1` | 2 | 不许加轮，三选一并在输出里说明：**拆计划** / **转探索性任务** / **升级给人决策** |
-| `L2` | 3 | 同上 |
+第 3 轮结束即审核关闭，**不再追求 `blocker` 清零**（规则见 `spec/plans/plan-audit-guide.md` 第 5 节）。不论第 3 轮结论是什么：
+
+1. 写 `audits/03-response.md` 逐条处置；未关闭的 `blocker` / `major` 一律用 `risk` 处置。
+2. 每个 `risk` 项落到 `plan.md` 的「风险」章节，三要素齐全：**后果 / 检测（挂在哪个 Step 的验证）/ 回退**。
+3. `STATUS.md` 改 `In Progress`，进入第 6 段实施。**不许写 `Blocked`，不许"再问一轮"。**
+4. 缺「检测」或「回退」的项不许开工，就地补齐。
+
+唯一例外：验收无法判定 / 需求自相矛盾 / 关键前置不存在 → 一次性输出裁定请求（待定项 + 2–3 个候选 + 各自后果），状态留 `Blocked` 并停。
 
 ### 5.3 【硬停机】无独立审核能力时
 
@@ -147,9 +152,9 @@ tasks/plans/<topic>/<plan-id>/
 移交审核
 计划：tasks/plans/<topic>/<plan-id>/
 规则：spec/plans/plan-audit-guide.md
-轮次：1 / <上限>
-要求：结论只能是 pass / pass-with-changes / reject；按规范第 6 章模板写 audits/01-audit.md
-完成后：回到 <本文件名> 继续第 5 段（响应 → 收敛 → 开工）
+轮次：<N> / 3（第 3 轮写"最后一轮"）
+要求：结论只能是 pass / pass-with-changes / reject；按规范第 6 章模板写 audits/NN-audit.md
+完成后：回到 <本文件名> 继续第 5 段（响应 → 收口 → 开工）
 ```
 
 ### 5.4 审核期间的禁止事项
